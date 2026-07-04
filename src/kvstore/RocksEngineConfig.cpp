@@ -20,6 +20,47 @@
 #include "common/utils/NebulaKeyUtils.h"
 #include "kvstore/EventListener.h"
 
+#if ROCKSDB_MAJOR >= 8
+#include <rocksdb/table.h>
+rocksdb::Status GetDBOptionsFromMap(
+    const rocksdb::DBOptions& base_options,
+    const std::unordered_map<std::string, std::string>& opts_map,
+    rocksdb::DBOptions* new_options,
+    bool input_strings_escaped,
+    bool ignore_unknown_options = false) {
+  rocksdb::ConfigOptions config_opts;
+  config_opts.input_strings_escaped = input_strings_escaped;
+  config_opts.ignore_unknown_options = ignore_unknown_options;
+  return rocksdb::GetDBOptionsFromMap(config_opts, base_options, opts_map, new_options);
+}
+
+rocksdb::Status GetColumnFamilyOptionsFromMap(
+    const rocksdb::ColumnFamilyOptions& base_options,
+    const std::unordered_map<std::string, std::string>& opts_map,
+    rocksdb::ColumnFamilyOptions* new_options,
+    bool input_strings_escaped,
+    bool ignore_unknown_options = false) {
+  rocksdb::ConfigOptions config_opts;
+  config_opts.input_strings_escaped = input_strings_escaped;
+  config_opts.ignore_unknown_options = ignore_unknown_options;
+  return rocksdb::GetColumnFamilyOptionsFromMap(
+      config_opts, base_options, opts_map, new_options);
+}
+
+rocksdb::Status GetBlockBasedTableOptionsFromMap(
+    const rocksdb::BlockBasedTableOptions& table_options,
+    const std::unordered_map<std::string, std::string>& opts_map,
+    rocksdb::BlockBasedTableOptions* new_table_options,
+    bool input_strings_escaped,
+    bool ignore_unknown_options = false) {
+  rocksdb::ConfigOptions config_opts;
+  config_opts.input_strings_escaped = input_strings_escaped;
+  config_opts.ignore_unknown_options = ignore_unknown_options;
+  return rocksdb::GetBlockBasedTableOptionsFromMap(
+      config_opts, table_options, opts_map, new_table_options);
+}
+#endif
+
 // [WAL]
 DEFINE_bool(rocksdb_disable_wal, false, "Whether to disable the WAL in rocksdb");
 

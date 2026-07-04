@@ -1,0 +1,44 @@
+# ToplingDB Easy Migrate: mimic RocksDB (BlockBasedTable + SkipList)
+
+MemTableRepFactory:
+  skiplist:
+    class: SkipList
+    params:
+      lookahead: 0
+
+FilterPolicy:
+  bloom:
+    class: BloomFilter
+    params:
+      bits_per_key: 10
+      use_block_based_builder: false
+
+TableFactory:
+  bb:
+    class: BlockBasedTable
+    params:
+      block_size: 8K
+      block_restart_interval: 16
+      filter_policy: bloom
+
+DBOptions:
+  default:
+    max_background_compactions: 4
+    max_background_flushes: 2
+    max_total_wal_size: 2G
+    manual_wal_flush: true
+    two_write_queues: true
+    create_if_missing: true
+    create_missing_column_families: true
+
+CFOptions:
+  default:
+    memtable_factory: "${skiplist}"
+    table_factory: bb
+    num_levels: 7
+    write_buffer_size: 64M
+    max_write_buffer_number: 4
+    target_file_size_base: 32M
+    level_compaction_dynamic_level_bytes: false
+    compression: kSnappyCompression
+    bottommost_compression: kSnappyCompression

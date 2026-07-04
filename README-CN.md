@@ -70,6 +70,22 @@ NebulaGraph内核 1.x 与 2.x 数据格式、通信协议、客户端等均双�
 
 您可以在[云上](https://cloud.nebula-graph.io/login)或[本地](https://docs.nebula-graph.com.cn/3.8.0/2.quick-start/3.quick-start-on-premise/2.install-nebula-graph/)快速体验 **NebulaGraph**。
 
+## ToplingDB
+
+本分支使用 [ToplingDB](https://github.com/topling/toplingdb) 替代 RocksDB。
+
+```bash
+cmake -B build && cmake --build build -j$(nproc)
+```
+
+使用外部已编译好的 ToplingDB：
+
+```bash
+cmake -B build -DEXTERNAL_TOPLINGDB_ROOT=/path/to/toplingdb && cmake --build build -j$(nproc)
+```
+
+[`conf/topling-mimic-rocksdb.yaml`](conf/topling-mimic-rocksdb.yaml) 与 [`conf/topling-enterprise.yaml`](conf/topling-enterprise.yaml) 仅为开箱即用的 Easy Migrate 示例配置，编译和运行 NebulaGraph 并非必需。
+
 <!--
 在开始使用 **NebulaGraph** 之前，必须通过[编译源码](https://docs.nebula-graph.com.cn/manual-CN/3.build-develop-and-administration/1.build/1.build-source-code/)或者 [docker compose](https://docs.nebula-graph.com.cn/manual-CN/3.build-develop-and-administration/1.build/2.build-by-docker/) 方式安装 **NebulaGraph**。您也可以观看[视频](https://space.bilibili.com/472621355)学习如何安装 **NebulaGraph**。
 -->

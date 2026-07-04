@@ -6,6 +6,7 @@
 #include "storage/http/StorageHttpStatsHandler.h"
 
 #include <proxygen/lib/http/ProxygenErrorEnum.h>
+#include <rocksdb/statistics.h>
 
 #include "common/base/Base.h"
 #include "kvstore/RocksEngineConfig.h"

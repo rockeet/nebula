@@ -71,6 +71,22 @@ See our [Roadmap](https://github.com/vesoft-inc/nebula/wiki/Nebula-Graph-Roadmap
 
 Read the [getting started](https://docs.nebula-graph.io/3.8.0/2.quick-start/1.quick-start-workflow/) docs for a quick start.
 
+## ToplingDB
+
+This branch uses [ToplingDB](https://github.com/topling/toplingdb) instead of RocksDB.
+
+```bash
+cmake -B build && cmake --build build -j$(nproc)
+```
+
+With a pre-built external ToplingDB:
+
+```bash
+cmake -B build -DEXTERNAL_TOPLINGDB_ROOT=/path/to/toplingdb && cmake --build build -j$(nproc)
+```
+
+[`conf/topling-mimic-rocksdb.yaml`](conf/topling-mimic-rocksdb.yaml) and [`conf/topling-enterprise.yaml`](conf/topling-enterprise.yaml) are optional sample Easy Migrate configs for out-of-the-box tuning — they are not required to compile or run NebulaGraph.
+
 ## Using NebulaGraph
 
 NebulaGraph is a distributed graph database with multiple components. You can [download](https://www.nebula-graph.io/download) or try in following ways:
