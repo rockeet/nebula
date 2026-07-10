@@ -22,6 +22,38 @@ elseif(NOT EXISTS ${toplingdb_src_dir}/include/rocksdb/db.h)
     message(FATAL_ERROR "ToplingDB source tree at ${toplingdb_src_dir} is incomplete (missing include/rocksdb/db.h)")
 endif()
 
+set(topling_zip_dir ${toplingdb_src_dir}/sideplugin/topling-zip)
+if(NOT EXISTS ${topling_zip_dir})
+    message(STATUS "Cloning topling-zip from https://github.com/topling/topling-zip.git ...")
+    file(MAKE_DIRECTORY ${toplingdb_src_dir}/sideplugin)
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} clone https://github.com/topling/topling-zip.git topling-zip
+        WORKING_DIRECTORY ${toplingdb_src_dir}/sideplugin
+        RESULT_VARIABLE topling_zip_clone_status
+        ERROR_VARIABLE topling_zip_clone_error
+    )
+    if(NOT ${topling_zip_clone_status} EQUAL 0)
+        file(REMOVE_RECURSE ${topling_zip_dir})
+        message(FATAL_ERROR "Failed to clone topling-zip from https://github.com/topling/topling-zip.git: ${topling_zip_clone_error}")
+    endif()
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+        WORKING_DIRECTORY ${topling_zip_dir}
+        RESULT_VARIABLE topling_zip_submodule_status
+        ERROR_VARIABLE topling_zip_submodule_error
+    )
+    if(NOT ${topling_zip_submodule_status} EQUAL 0)
+        file(REMOVE_RECURSE ${topling_zip_dir})
+        message(FATAL_ERROR "Failed to init topling-zip submodules: ${topling_zip_submodule_error}")
+    endif()
+    if(NOT EXISTS ${topling_zip_dir}/src)
+        file(REMOVE_RECURSE ${topling_zip_dir})
+        message(FATAL_ERROR "Cloned topling-zip source tree is missing src/ at ${topling_zip_dir}")
+    endif()
+elseif(NOT EXISTS ${topling_zip_dir}/src)
+    message(FATAL_ERROR "topling-zip source tree at ${topling_zip_dir} is incomplete (missing src/)")
+endif()
+
 set(TOPLINGDB_ROOT ${toplingdb_src_dir})
 
 if(EXISTS ${toplingdb_lib})
