@@ -20,7 +20,6 @@ if(USE_TOPLINGDB)
   include_directories(BEFORE SYSTEM
       "${TOPLINGDB_ROOT}/include"
       "${TOPLINGDB_ROOT}/sideplugin/topling-zip/src"
-      "${TOPLINGDB_ROOT}/sideplugin/topling-zip/boost-include"
   )
 else()
   find_path(Rocksdb_INCLUDE_DIR NAMES rocksdb)

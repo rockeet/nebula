@@ -72,7 +72,7 @@ NebulaGraph内核 1.x 与 2.x 数据格式、通信协议、客户端等均双�
 
 ## ToplingDB
 
-本分支使用 [ToplingDB](https://github.com/topling/toplingdb) 替代 RocksDB。
+本分支使用 [ToplingDB](https://github.com/topling/toplingdb) 替代 RocksDB。Nebula 可执行文件静态链接 `libjemalloc.a`；ToplingDB 产出共享库 `librocksdb.so`，**始终**以 `DISABLE_JEMALLOC=1` 编译（使用系统 malloc），二者不共用同一套 jemalloc 链接方式。
 
 ```bash
 cmake -B build && cmake --build build -j$(nproc)
@@ -82,6 +82,12 @@ cmake -B build && cmake --build build -j$(nproc)
 
 ```bash
 cmake -B build -DEXTERNAL_TOPLINGDB_ROOT=/path/to/toplingdb && cmake --build build -j$(nproc)
+```
+
+安装 standalone 时，`librocksdb.so*` 会复制到安装前缀的 `lib/`（`cp -a` 保留软链接），`nebula-standalone` 的 RUNPATH 为 `$ORIGIN/../lib`。**必须**使用 `--component graph` 才会安装 ToplingDB 运行库；省略该参数的全量 `cmake --install` **不会**复制 `librocksdb.so*`。
+
+```bash
+cmake --install build --prefix /path/to/install --component graph
 ```
 
 [`conf/topling-mimic-rocksdb.yaml`](conf/topling-mimic-rocksdb.yaml) 与 [`conf/topling-enterprise.yaml`](conf/topling-enterprise.yaml) 仅为开箱即用的 Easy Migrate 示例配置，编译和运行 NebulaGraph 并非必需。
