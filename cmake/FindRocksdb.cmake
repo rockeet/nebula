@@ -14,8 +14,10 @@
 #  Rocksdb_LIBRARY          The Rocksdb library.
 
 if(USE_TOPLINGDB)
-  find_path(Rocksdb_INCLUDE_DIR NAMES rocksdb/db.h
-    PATHS "${TOPLINGDB_ROOT}/include" NO_DEFAULT_PATH)
+  set(Rocksdb_INCLUDE_DIR "${TOPLINGDB_ROOT}/include")
+  if(NOT EXISTS "${Rocksdb_INCLUDE_DIR}/rocksdb/db.h")
+    message(FATAL_ERROR "ToplingDB is missing ${Rocksdb_INCLUDE_DIR}/rocksdb/db.h")
+  endif()
   set(Rocksdb_LIBRARY "${TOPLINGDB_ROOT}/librocksdb.so" CACHE FILEPATH "ToplingDB shared library" FORCE)
   include_directories(BEFORE SYSTEM
       "${TOPLINGDB_ROOT}/include"

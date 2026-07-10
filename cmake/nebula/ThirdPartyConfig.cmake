@@ -41,6 +41,19 @@ if(NOT ${NEBULA_THIRDPARTY_ROOT} STREQUAL "")
         ${NEBULA_THIRDPARTY_ROOT}/lib
         ${NEBULA_THIRDPARTY_ROOT}/lib64
     )
+    if(USE_TOPLINGDB)
+        string(FIND "${NEBULA_THIRDPARTY_ROOT}" "${CMAKE_BINARY_DIR}" _owned_third_party_prefix)
+        if(_owned_third_party_prefix EQUAL 0)
+            if(EXISTS "${NEBULA_THIRDPARTY_ROOT}/include/rocksdb"
+               OR EXISTS "${NEBULA_THIRDPARTY_ROOT}/lib/librocksdb.a"
+               OR EXISTS "${NEBULA_THIRDPARTY_ROOT}/lib64/librocksdb.a")
+                message(STATUS "Removing bundled RocksDB from ${NEBULA_THIRDPARTY_ROOT}")
+                file(REMOVE_RECURSE "${NEBULA_THIRDPARTY_ROOT}/include/rocksdb")
+                file(REMOVE "${NEBULA_THIRDPARTY_ROOT}/lib/librocksdb.a")
+                file(REMOVE "${NEBULA_THIRDPARTY_ROOT}/lib64/librocksdb.a")
+            endif()
+        endif()
+    endif()
 endif()
 
 if(NOT ${NEBULA_OTHER_ROOT} STREQUAL "")

@@ -100,4 +100,28 @@ $download_cmd $url
     exit 1
 }
 
-bash $selected_archive $@ && rm -rf $selected_archive
+remove_bundled_rocksdb() {
+    local prefix="$1"
+    if [[ -z "$prefix" || ! -d "$prefix" ]]; then
+        echo "REMOVE_BUNDLED_ROCKSDB=1 but --prefix is missing or invalid, skip removing bundled rocksdb" 1>&2
+        return 0
+    fi
+    rm -rf "${prefix}/include/rocksdb"
+    rm -f "${prefix}/lib/librocksdb.a" "${prefix}/lib64/librocksdb.a"
+    echo "Removed bundled RocksDB from ${prefix}"
+}
+
+if bash $selected_archive "$@"; then
+    rm -rf $selected_archive
+    if [[ "${REMOVE_BUNDLED_ROCKSDB:-0}" == "1" ]]; then
+        prefix=
+        for arg in "$@"; do
+            case "$arg" in
+                --prefix=*) prefix="${arg#--prefix=}" ;;
+            esac
+        done
+        remove_bundled_rocksdb "$prefix"
+    fi
+else
+    exit 1
+fi
