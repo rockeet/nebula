@@ -15,6 +15,12 @@ macro(nebula_add_executable)
         ${nebula_exec_NAME}
         ${nebula_exec_LIBRARIES}
     )
+    if(USE_TOPLINGDB AND NOT TOPLINGDB_PREBUILT AND TARGET toplingdb_shared_lib)
+        list(FIND nebula_exec_LIBRARIES "${ROCKSDB_LIBRARIES}" _nebula_rocksdb_lib_idx)
+        if(NOT _nebula_rocksdb_lib_idx EQUAL -1)
+            add_dependencies(${nebula_exec_NAME} toplingdb_shared_lib)
+        endif()
+    endif()
 
     if(${nebula_exec_NAME} MATCHES "_test$")
         set_target_properties(

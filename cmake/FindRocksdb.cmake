@@ -16,12 +16,7 @@
 if(USE_TOPLINGDB)
   find_path(Rocksdb_INCLUDE_DIR NAMES rocksdb/db.h
     PATHS "${TOPLINGDB_ROOT}/include" NO_DEFAULT_PATH)
-  if(TOPLINGDB_NEEDS_BUILD AND NOT EXISTS "${TOPLINGDB_ROOT}/librocksdb.so")
-    set(Rocksdb_LIBRARY "${TOPLINGDB_ROOT}/librocksdb.so")
-  else()
-    find_library(Rocksdb_LIBRARY NAMES librocksdb.so
-      PATHS "${TOPLINGDB_ROOT}" PATH_SUFFIXES . lib lib64 NO_DEFAULT_PATH)
-  endif()
+  set(Rocksdb_LIBRARY "${TOPLINGDB_ROOT}/librocksdb.so" CACHE FILEPATH "ToplingDB shared library" FORCE)
   include_directories(BEFORE SYSTEM
       "${TOPLINGDB_ROOT}/include"
       "${TOPLINGDB_ROOT}/sideplugin/topling-zip/src"
