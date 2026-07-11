@@ -103,11 +103,17 @@ $download_cmd $url
 remove_bundled_rocksdb() {
     local prefix="$1"
     if [[ -z "$prefix" || ! -d "$prefix" ]]; then
-        echo "REMOVE_BUNDLED_ROCKSDB=1 but --prefix is missing or invalid, skip removing bundled rocksdb" 1>&2
-        return 0
+        echo "REMOVE_BUNDLED_ROCKSDB=1 but --prefix is missing or invalid" 1>&2
+        return 1
     fi
     rm -rf "${prefix}/include/rocksdb"
     rm -f "${prefix}/lib/librocksdb.a" "${prefix}/lib64/librocksdb.a"
+    if [[ -e "${prefix}/include/rocksdb" \
+       || -f "${prefix}/lib/librocksdb.a" \
+       || -f "${prefix}/lib64/librocksdb.a" ]]; then
+        echo "Failed to remove bundled RocksDB from ${prefix}" 1>&2
+        return 1
+    fi
     echo "Removed bundled RocksDB from ${prefix}"
 }
 
@@ -120,7 +126,7 @@ if bash $selected_archive "$@"; then
                 --prefix=*) prefix="${arg#--prefix=}" ;;
             esac
         done
-        remove_bundled_rocksdb "$prefix"
+        remove_bundled_rocksdb "$prefix" || exit 1
     fi
 else
     exit 1
