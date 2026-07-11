@@ -168,6 +168,19 @@ if(USE_TOPLINGDB)
             message(FATAL_ERROR \"cp -a librocksdb.so* failed: \${_toplingdb_cp_ret}\")
         endif()
     " COMPONENT graph)
+    install(
+        FILES
+            ${CMAKE_SOURCE_DIR}/conf/topling-mimic-rocksdb.yaml
+            ${CMAKE_SOURCE_DIR}/conf/topling-enterprise.yaml
+        PERMISSIONS
+            OWNER_READ
+            GROUP_READ
+            WORLD_READ
+        DESTINATION
+            etc
+        COMPONENT
+            graph
+    )
 endif()
 find_package(Rocksdb REQUIRED)
 find_package(Snappy REQUIRED)
